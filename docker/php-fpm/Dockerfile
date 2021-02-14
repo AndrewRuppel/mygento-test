@@ -1,15 +1,16 @@
 ARG php_version=7.1
 FROM php:${php_version}-fpm
 
-LABEL maintainer="Ryan Gellis <ryan.gellis@rmgmedia.com>"
+LABEL maintainer="Andrew Ruppel <ruppelaa@gmail.com>"
 
 ENV COMPOSER_HOME /var/www/.composer
 
 RUN apt-get update && apt-get install -y \
+  git \
   libfreetype6-dev \
   libjpeg-dev \
-  libmcrypt-dev \
   libpng-dev \
+  libzip-dev \
   libxml2-dev \
   libxslt-dev \
   zlib1g-dev \
@@ -17,7 +18,6 @@ RUN apt-get update && apt-get install -y \
   && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/lib \
   && docker-php-ext-install gd \
   && docker-php-ext-install intl \
-  && docker-php-ext-install mcrypt \
   && docker-php-ext-install opcache \
   && docker-php-ext-install pdo_mysql \
   && docker-php-ext-install soap \
@@ -27,10 +27,12 @@ RUN apt-get update && apt-get install -y \
 
 COPY *.sh /var/www/
 RUN chown www-data:www-data /var/www/*.sh && chmod +x /var/www/*.sh
-
+RUN mkdir /var/www/.composer && chown www-data:www-data /var/www/.composer
+RUN chown -R www-data:www-data /var/www
+#
 USER www-data
 
-COPY --from=composer:1.5 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:1.10.20 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/magento
 

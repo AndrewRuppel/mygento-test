@@ -1,10 +1,13 @@
 ARG nginx_version=1.15
 FROM nginx:${nginx_version}
 
-LABEL maintainer="Ryan Gellis <ryan.gellis@rmgmedia.com>"
+LABEL maintainer="Andrew Ruppel <ruppelaa@gmail.com>"
 
 ARG nginx_port=80
 ENV NGINX_PORT=${nginx_port}
+
+ARG nginx_vhost_name="_"
+ENV NGINX_VHOST_NAME=${nginx_vhost_name}
 
 COPY ./magento.conf.tpl /etc/nginx/conf.d/
 

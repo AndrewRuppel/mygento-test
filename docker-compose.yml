@@ -12,6 +12,8 @@ services:
     volumes:
       - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf:cached
       - ./src/magento:/var/www/magento:cached
+    networks:
+      - 'mygento'
   php-fpm:
     build:
       args:
@@ -21,17 +23,14 @@ services:
       - .env
     depends_on:
       - cron
-      - elasticsearch
       - mysql
-      - rabbitmq
-      - redis-fpc
-      - redis-obj
-      - redis-ses
     restart: always
     volumes:
       - ./src/magento:/var/www/magento:cached
       - ./config/composer/auth.json:/var/www/.composer/auth.json:cached
       - ./config/php/php.ini:/usr/local/etc/php/php.ini:cached
+    networks:
+      - 'mygento'
   cron:
     build:
       args:
@@ -40,6 +39,8 @@ services:
     restart: always
     volumes:
       - ./src/magento:/var/www/magento:cached
+    networks:
+      - 'mygento'
   mysql:
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
@@ -47,45 +48,48 @@ services:
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
     image: percona:${MYSQL_VERSION}
-    ports:
-      - "3306:3306"
     restart: always
     volumes:
       - mysql-log:/var/log/mysql
       - mysql-lib:/var/lib/mysql
-  redis-obj:
-    image: redis:${REDIS_VERSION}
-    ports:
-      - "6379:6379"
-    restart: always
-  redis-fpc:
-    command: redis-server /usr/local/etc/redis/redis.conf
-    image: redis:${REDIS_VERSION}
-    ports:
-      - "6380:6380"
-    restart: always
-    volumes:
-      - ./config/redis/fpc.conf:/usr/local/etc/redis/redis.conf
-  redis-ses:
-    command: redis-server /usr/local/etc/redis/redis.conf
-    image: redis:${REDIS_VERSION}
-    ports:
-      - "6381:6381"
-    restart: always
-    volumes:
-      - ./config/redis/ses.conf:/usr/local/etc/redis/redis.conf
-  elasticsearch:
-    image: elasticsearch:${ELASTICSEARCH_VERSION}
-    ports:
-      - "9200:9200"
-      - "9300:9300"
-    restart: always
-  rabbitmq:
-    image: rabbitmq:${RABBITMQ_VERSION}-management
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    restart: always
+    networks:
+      - 'mygento'
+#  redis-obj:
+#    image: redis:${REDIS_VERSION}
+#    ports:
+#      - "6379:6379"
+#    restart: always
+#  redis-fpc:
+#    command: redis-server /usr/local/etc/redis/redis.conf
+#    image: redis:${REDIS_VERSION}
+#    ports:
+#      - "6380:6380"
+#    restart: always
+#    volumes:
+#      - ./config/redis/fpc.conf:/usr/local/etc/redis/redis.conf
+#  redis-ses:
+#    command: redis-server /usr/local/etc/redis/redis.conf
+#    image: redis:${REDIS_VERSION}
+#    ports:
+#      - "6381:6381"
+#    restart: always
+#    volumes:
+#      - ./config/redis/ses.conf:/usr/local/etc/redis/redis.conf
+#  elasticsearch:
+#    image: elasticsearch:${ELASTICSEARCH_VERSION}
+#    ports:
+#      - "9200:9200"
+#      - "9300:9300"
+#    restart: always
+#  rabbitmq:
+#    image: rabbitmq:${RABBITMQ_VERSION}-management
+#    ports:
+#      - "5672:5672"
+#      - "15672:15672"
+#    restart: always
 volumes:
   mysql-log:
   mysql-lib:
+
+networks:
+  mygento:

@@ -4,7 +4,7 @@ upstream fastcgi_backend {
 
 server {
   listen ${NGINX_PORT};
-  server_name magento.local-rmgmedia.com;
+  server_name ${NGINX_VHOST_NAME};
   set $MAGE_ROOT /var/www/magento;
   set $MAGE_MODE default;
 
@@ -146,7 +146,8 @@ server {
   location ~ (index|get|static|report|404|503|health_check)\.php$ {
     try_files $uri =404;
     fastcgi_pass   fastcgi_backend;
-    fastcgi_buffers 1024 4k;
+    fastcgi_buffers 4 32k;
+    fastcgi_buffer_size 32k;
 
     fastcgi_param  PHP_FLAG  "session.auto_start=off \n suhosin.session.cryptua=off";
     fastcgi_param  PHP_VALUE "memory_limit=2G \n max_execution_time=18000";

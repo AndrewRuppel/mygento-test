@@ -1,3 +1,2 @@
 .idea
 config/nginx/ssl/*
-src/magento/*
