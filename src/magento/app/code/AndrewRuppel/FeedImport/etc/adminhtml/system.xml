@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="ymlimport" translate="label" sortOrder="999">
+            <label>Import</label>
+        </tab>
+        <section id="settings" sortOrder="10" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+            <label>Settings</label>
+            <tab>ymlimport</tab>
+            <resource>AndrewRuppel_FeedImport::config_andrewruppel_feedimport</resource>
+            <group id="import" sortOrder="10" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                <label>Import settings</label>
+                <field id="import_url" type="text" sortOrder="10" showInWebsite="1" showInStore="1" showInDefault="1" translate="label">
+                    <label>Import URL</label>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
